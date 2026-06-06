@@ -1,0 +1,1115 @@
+/* ==========================================================================
+   1. CSS Reset & 全域變數 (Variables)
+   ========================================================================== */
+   * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #8E7C77;       /* 溫暖織物棕 */
+    --secondary-color: #D1C7BD;     /* 柔和線球灰白 */
+    --accent-color: #B09B96;        /* 莫蘭迪粉棕 */
+    --text-dark: #4A3E3D;           /* 深色文字 */
+    --bg-main: #FAF6F0;             /* 溫暖米白奶油風 */
+    --highlight-color: #C07A67;     /* 織物強調橘紅 */
+    --font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;       /* 支援一頁式平滑滾動 */
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg-main);
+    color: var(--text-dark);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;             /* 確保 footer 能被推到底部 */
+}
+
+/* ==========================================================================
+   2. 共用導覽列與下拉選單 (Header & Dropdown Menu)
+   ========================================================================== */
+header {
+    background-color: #FFFFFF;
+    box-shadow: 0 2px 10px rgba(142, 124, 119, 0.1);
+    position: fixed;               /* 一頁式網頁固定頂部 */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary-color);
+    letter-spacing: 1px;
+    text-decoration: none;
+}
+
+.nav-menu {
+    display: flex;
+    list-style: none;
+    gap: 25px;
+}
+
+/* 讓帶有下拉選單的 li 成為定位基準 */
+.nav-item {
+    position: relative;
+}
+
+.nav-menu a {
+    text-decoration: none;
+    color: var(--text-dark);
+    font-size: 16px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    position: relative;
+    padding-bottom: 5px;
+    display: block;
+}
+
+/* 點亮機制：當滑鼠懸停、或是被 JS 加上 .active、或是懸停在下拉選單母體時，文字一律變織物棕 */
+.nav-menu a:hover, 
+.nav-menu a.active,
+.has-dropdown:hover > a {
+    color: var(--primary-color) !important;
+}
+
+/* 核心底線效果：當主選項處於 active 狀態或被滑鼠懸停時，下方滑出棕色底線（排除下拉選單內部） */
+.nav-menu > .nav-item > a.active::after,
+.nav-menu > .nav-item:hover > a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--primary-color);
+}
+
+/* ── 下拉選單基礎設定 ── */
+.dropdown-menu {
+    position: absolute;
+    top: 100%;                     /* 緊貼在母選項下方 */
+    left: 50%;
+    transform: translateX(-50%) translateY(10px); /* 居中並下移，做彈出動畫準備 */
+    background-color: #FFFFFF;
+    min-width: 160px;
+    box-shadow: 0 5px 20px rgba(142, 124, 119, 0.15);
+    border-radius: 8px;
+    list-style: none;
+    padding: 8px 0;
+    opacity: 0;                    /* 預設隱藏 */
+    visibility: hidden;            /* 預設不可點擊 */
+    transition: all 0.3s ease;     /* 順滑淡入與上浮動畫 */
+    border: 1px solid rgba(209, 199, 189, 0.3);
+}
+
+.dropdown-menu li {
+    width: 100%;
+}
+
+.dropdown-menu a {
+    padding: 10px 20px;
+    font-size: 14px;
+    color: var(--text-dark) !important; /* 下拉選單內部預設文字顏色 */
+    text-align: center;
+    white-space: nowrap;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* 徹底強制拔除下拉子選單內部的底線條，維持精緻感 */
+.dropdown-menu a::after,
+.dropdown-menu a.active::after {
+    display: none !important;
+}
+
+/* 下拉選單項目的懸停滑入效果 */
+.dropdown-menu a:hover {
+    background-color: var(--bg-main);
+    color: var(--primary-color) !important;
+}
+
+/* ── 滑鼠懸停（Hover）時觸發顯示 ── */
+.nav-item:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0); /* 回歸正常位置，產生微幅上浮感 */
+}
+
+/* 下拉選單的小箭頭提示 */
+.has-dropdown > a::after {
+    content: ' ▾';
+    font-size: 12px;
+    color: var(--accent-color);
+    vertical-align: middle;
+}
+.has-dropdown:hover > a::after,
+.has-dropdown > a.active::after {
+    color: var(--primary-color);
+}
+
+/* ==========================================================================
+   3. 共用主體容器與主標題 (Main Layout & Titles)
+   ========================================================================== */
+main {
+    margin-top: 70px;              /* 預留空間給 fixed 導覽列，防止內容被遮擋 */
+    flex: 1;                       /* 自動填滿剩餘空間，推擠頁尾 */
+}
+
+.main-container {
+    max-width: 1200px;             /* 預設寬度 */
+    margin: 60px auto;
+    padding: 0 20px;
+}
+
+/* 針對內容較集中的精緻版型（如店家介紹、商品須知與聯絡卡片）提供窄版容器 */
+.main-container-narrow {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 0 20px;
+}
+
+.section-title, .page-title {
+    text-align: center;
+    font-size: 28px;
+    color: var(--primary-color);
+    margin-bottom: 40px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.section-title::after, .page-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 2px;
+    background-color: var(--accent-color);
+}
+
+/* 🔥 【萬能修正】暴力推擠法：為全站所有可能被跳轉的目標與標題，隔空加上隱形防撞墊片 */
+#story, #boss, .owner-section, .notice-card, .section-title, .page-title, h2[id] {
+    position: relative;
+}
+#story::before, #boss::before, .owner-section::before, .notice-card::before, .section-title::before, .page-title::before {
+    content: "";
+    display: block;
+    height: 90px;          /* 隱形墊片高度 (Header 70px + 20px 舒適留白) */
+    margin-top: -90px;     /* 用負邊距把內容拉回原位，不影響網頁原本的排版 */
+    visibility: hidden;
+    pointer-events: none;  /* 防止隱形區域影響滑鼠點擊 */
+}
+
+/* ==========================================================================
+   4. 首頁專屬元件 (Hero, Marquee, Table Layout)
+   ========================================================================== */
+/* 跑馬燈 Marquee */
+.marquee-wrapper {
+    margin-top: 70px;              /* 跑馬燈同樣需推開固定導覽列高度 */
+    background-color: var(--accent-color);
+    color: #FFFFFF;
+    padding: 10px 0;
+    overflow: hidden;
+    position: relative;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.marquee-content {
+    display: inline-block;
+    white-space: nowrap;
+    padding-left: 100%;
+    animation: marquee 25s linear infinite;
+}
+
+@keyframes marquee {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-100%, 0, 0); }
+}
+
+/* 主視覺區 Hero */
+.hero-section {
+    background: linear-gradient(rgba(250, 246, 240, 0.6), rgba(250, 246, 240, 0.8)), 
+                url('https://images.unsplash.com/photo-1584992236310-6edddc08ca2b?auto=format&fit=crop&q=80&w=1200') no-repeat center/cover;
+    padding: 100px 20px;
+    text-align: center;
+    border-bottom: 1px solid rgba(142, 124, 119, 0.1);
+}
+
+.hero-title {
+    font-size: 42px;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.hero-subtitle {
+    font-size: 18px;
+    color: var(--text-dark);
+    max-width: 600px;
+    margin: 0 auto 30px auto;
+    font-weight: 300;
+}
+
+.cta-btn {
+    display: inline-block;
+    padding: 12px 35px;
+    background-color: var(--primary-color);
+    color: #FFFFFF;
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(142, 124, 119, 0.2);
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.cta-btn:hover {
+    background-color: var(--text-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(142, 124, 119, 0.3);
+}
+
+/* 今日看板 Table 結構 */
+.layout-table {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 20px 0;
+    margin-bottom: 60px;
+}
+
+.layout-row {
+    display: table-row;
+}
+
+.layout-col {
+    display: table-cell;
+    vertical-align: top;
+    background: #FFFFFF;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 5px 15px rgba(142, 124, 119, 0.05);
+    text-align: center;
+}
+
+.counter-num {
+    font-size: 36px;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    font-family: 'Georgia', serif;
+}
+
+.counter-label {
+    font-size: 15px;
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+/* 幕後老闆介紹 */
+.owner-section {
+    background-color: #FFFFFF;
+    border-radius: 16px;
+    padding: 50px;
+    box-shadow: 0 5px 20px rgba(142, 124, 119, 0.04);
+    margin-top: 40px;
+}
+
+.owner-table {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.owner-row {
+    display: table-row;
+}
+
+.owner-avatar-col {
+    display: table-cell;
+    width: 35%;
+    vertical-align: middle;
+    text-align: center;
+    padding-right: 40px;
+}
+
+.owner-content-col {
+    display: table-cell;
+    width: 65%;
+    vertical-align: middle;
+}
+
+.owner-img {
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid var(--secondary-color);
+    box-shadow: 0 8px 25px rgba(142, 124, 119, 0.15);
+}
+
+.owner-name {
+    font-size: 24px;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.owner-bio {
+    font-size: 16px;
+    color: var(--text-dark);
+    line-height: 1.8;
+    text-align: justify;
+}
+
+/* ==========================================================================
+   5. 店家介紹專屬元件 (Story Boards & Brand Banner)
+   ========================================================================== */
+.story-table {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0 30px;
+}
+
+.story-row {
+    display: table-row;
+}
+
+.story-cell-text {
+    display: table-cell;
+    vertical-align: middle;
+    background-color: #FFFFFF;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 5px 20px rgba(142, 124, 119, 0.04);
+}
+
+.story-h3 {
+    font-size: 22px;
+    color: var(--primary-color);
+    margin-bottom: 18px;
+    font-weight: 600;
+    border-left: 4px solid var(--accent-color);
+    padding-left: 12px;
+}
+
+.story-p {
+    font-size: 15px;
+    color: var(--text-dark);
+    line-height: 1.8;
+    text-align: justify;
+}
+
+/* 品牌核心精神標語 */
+.spirit-banner {
+    background-color: var(--primary-color);
+    color: #FFFFFF;
+    text-align: center;
+    padding: 40px 20px;
+    border-radius: 16px;
+    margin: 50px 0;
+    box-shadow: 0 10px 25px rgba(142, 124, 119, 0.15);
+}
+
+.spirit-h4 {
+    font-size: 20px;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+.spirit-p {
+    font-size: 14px;
+    color: var(--secondary-color);
+    letter-spacing: 1px;
+}
+
+/* ==========================================================================
+   6. 商品須知專屬元件 (Notice Cards & Typography)
+   ========================================================================== */
+.notice-card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 5px 20px rgba(142, 124, 119, 0.04);
+    margin-bottom: 30px;
+}
+
+.section-subtitle {
+    font-size: 20px;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px dashed var(--secondary-color);
+    padding-bottom: 10px;
+}
+
+.section-subtitle span {
+    margin-right: 10px;
+    font-size: 22px;
+}
+
+.notice-list {
+    list-style: none;
+    padding-left: 5px;
+}
+
+.notice-list li {
+    position: relative;
+    padding-left: 25px;
+    margin-bottom: 15px;
+    font-size: 15px;
+    color: #5A4E4D;
+    text-align: justify;
+}
+
+.notice-list li::before {
+    content: "•";
+    position: absolute;
+    left: 5px;
+    top: 0;
+    color: var(--accent-color);
+    font-size: 20px;
+    line-height: 1;
+}
+
+.highlight-text {
+    color: var(--highlight-color);
+    font-weight: 600;
+}
+
+.tip-box {
+    background-color: #FAF6F0;
+    border-left: 4px solid var(--primary-color);
+    padding: 20px;
+    border-radius: 0 8px 8px 0;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #7E6E69;
+}
+
+/* ==========================================================================
+   7. 聯絡頁專屬元件 (Contact Card & Social Links)
+   ========================================================================== */
+.contact-card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    padding: 45px;
+    box-shadow: 0 5px 25px rgba(142, 124, 119, 0.04);
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.info-title {
+    font-size: 22px;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.info-p {
+    font-size: 16px;
+    margin-bottom: 35px;
+    color: #6E5E5A;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.social-links-container {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.social-link-item {
+    display: block;
+    background-color: #FAF6F0;
+    padding: 16px 25px;
+    border-radius: 30px;
+    color: var(--text-dark);
+    text-decoration: none;
+    margin-bottom: 20px;
+    font-weight: 500;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+    box-shadow: 0 2px 5px rgba(142, 124, 119, 0.02);
+}
+
+.social-link-item:hover {
+    background-color: #FFFFFF;
+    border-color: var(--accent-color);
+    transform: translateY(-3px);   /* 向上微浮懸停特效 */
+    box-shadow: 0 5px 15px rgba(142, 124, 119, 0.1);
+    color: var(--primary-color);
+}
+
+.social-icon {
+    margin-right: 12px;
+    font-size: 18px;
+}
+
+/* ==========================================================================
+   8. 共用頁尾 & 響應式佈局 (Footer & Responsive RWD)
+   ========================================================================== */
+footer {
+    background-color: #4A3E3D;
+    color: #FAF6F0;
+    text-align: center;
+    padding: 25px 20px;
+    margin-top: 80px;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    border-top: 3px solid var(--primary-color);
+    width: 100%;
+}
+
+/* 手機版與平板網頁極致優化 */
+@media (max-width: 768px) {
+    .layout-table, .layout-row, .layout-col,
+    .owner-table, .owner-row, .owner-avatar-col, .owner-content-col,
+    .story-table, .story-row, .story-cell-text {
+        display: block;
+        width: 100%;
+        padding: 20px;
+        text-align: center;
+    }
+    .owner-avatar-col {
+        padding-right: 0;
+        margin-bottom: 20px;
+    }
+    .nav-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .notice-card, .contact-card, .story-cell-text {
+        padding: 25px 20px;
+    }
+
+    /* 手機版優化：無法 hover 懸停時，下拉選單直接無縫平鋪展示，方便手指點選 */
+    .dropdown-menu {
+        position: static;
+        transform: none;
+        opacity: 1;
+        visibility: visible;
+        box-shadow: none;
+        border: none;
+        background: transparent;
+        padding: 5px 0 0 0;
+        margin: 5px auto 0 auto;
+        text-align: center;
+    }
+    .dropdown-menu a {
+        padding: 6px 10px;
+        color: var(--accent-color) !important;
+    }
+    .has-dropdown > a::after {
+        content: ''; /* 手機版移除下落小箭頭，讓介面乾淨 */
+    }
+}
+
+
+#game-container {
+    padding-top: 75px !important;    
+    margin-top: -100px !important;   
+}
+
+/* 遊戲專屬的排版微調樣式 */
+.game-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.score-board {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 596px; 
+    margin-bottom: 25px;
+    background: #FFFFFF;
+    padding: 9px 30px;
+    border-radius: 14px;
+    box-shadow: 0 4px 15px rgba(142, 124, 119, 0.05);
+}
+
+.score-item {
+    font-size: 20px; 
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.score-item span {
+    color: var(--highlight-color);
+    font-family: 'Georgia', serif;
+    font-size: 28px;
+    margin-left: 8px;
+}
+
+.canvas-container {
+    position: relative;
+    background: #FFFFFF;
+    padding: 12px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(142, 124, 119, 0.1);
+    border: 4px solid var(--secondary-color);
+    max-width: 100%;
+}
+
+canvas {
+    background-color: var(--bg-main); 
+    display: block;
+    border-radius: 12px;
+}
+
+/* 遊戲結束結算畫面 */
+.game-over-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(74, 62, 61, 0.88); 
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 10;
+    padding: 20px;
+}
+
+.game-over-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.game-over-title {
+    font-size: 36px; 
+    color: var(--secondary-color);
+    margin-bottom: 10px;
+    font-weight: bold;
+    letter-spacing: 3px;
+}
+
+.game-overlay-text {
+    font-size: 16px;
+    margin-bottom: 20px;
+    color: #E6DCDA;
+    text-align: center;
+}
+
+/* 🎯 修正與優化：結算畫面的隨機照片樣式 */
+/* 將寬高設為50%，並使縱橫比為 1/1 正方形，可完美依據載具（畫布）寬度彈性伸縮 50% */
+.game-over-photo-container {
+    width: 50%;
+    aspect-ratio: 1 / 1; 
+    margin-bottom: 20px;
+    border-radius: 15px;
+    border: 3px solid var(--secondary-color);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    overflow: hidden; 
+    background: #4A3E3D; 
+}
+
+.game-over-photo {
+    width: 100%;              
+    height: 100%;             
+    object-fit: cover; /* 自動溫柔裁切，使任何照片都不會因為拉伸而扁掉變形 */
+    display: block;
+}
+
+.game-hint {
+    margin-top: 20px;
+    font-size: 15px;
+    color: var(--accent-color);
+}
+
+
+/* ==========================================================================
+   9. 商品頁面 (Product Page) 專屬佈局與輪播樣式
+   ========================================================================== */
+   .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 30px;
+    margin-top: 20px;
+    margin-bottom: 60px;
+}
+
+.product-card {
+    background: #FFFFFF;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(142, 124, 119, 0.05);
+    border: 1px solid rgba(209, 199, 189, 0.2);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(142, 124, 119, 0.12);
+}
+
+/* ── 輪播圖容器控制 ── */
+.carousel-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background-color: var(--secondary-color);
+    overflow: hidden;
+}
+
+.carousel-slides {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.carousel-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+    pointer-events: none;
+}
+
+.carousel-img.active {
+    opacity: 1;
+    position: relative;
+    pointer-events: auto;
+}
+
+/* 輪播左右鍵 */
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(74, 62, 61, 0.4);
+    color: #FFFFFF;
+    border: none;
+    padding: 10px 14px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 50%;
+    transition: background 0.3s, opacity 0.3s;
+    z-index: 5;
+    user-select: none;
+}
+
+.carousel-btn:hover {
+    background: var(--primary-color);
+}
+
+.carousel-btn.prev { left: 10px; }
+.carousel-btn.next { right: 10px; }
+
+/* ── 商品資訊區 ── */
+.product-info {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.product-name {
+    font-size: 19px;
+    color: var(--text-dark);
+    margin: 10px 0 6px 0;
+    font-weight: 600;
+}
+
+.product-spec {
+    font-size: 13px;
+    color: #8E7C77;
+    margin-bottom: 12px;
+}
+
+.product-desc {
+    font-size: 14px;
+    color: #6E5E5A;
+    line-height: 1.6;
+    text-align: justify;
+    margin-bottom: 15px;
+    flex: 1; /* 撐開高度使卡片對齊 */
+}
+
+.product-price {
+    font-size: 22px;
+    color: var(--highlight-color);
+    font-weight: bold;
+    font-family: 'Georgia', serif;
+    border-top: 1px dashed var(--secondary-color);
+    padding-top: 10px;
+    margin-top: auto;
+}
+
+/* ── 商品狀態標籤樣式 ── */
+.product-status {
+    align-self: flex-start;
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.status-instock {
+    background-color: #E8F5E9;
+    color: #2E7D32;
+}
+
+.status-order {
+    background-color: #FFF3E0;
+    color: #EF6C00;
+}
+
+.status-out {
+    background-color: #FFEBEE;
+    color: #C62828;
+}
+
+/* RWD 手機版優化調整 */
+@media (max-width: 480px) {
+    .product-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 0 10px;
+    }
+}
+
+/* ==========================================================================
+   【新增】商品展示網格區塊 (每排三個商品，未達三個自動置中)
+   ========================================================================== */
+
+/* 商品外層網格 */
+.product-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center; /* 關鍵：未滿三個商品時會自動居中對齊 */
+    width: 100%;
+}
+
+/* 單個商品卡片 */
+.product-card {
+    background-color: #FFF;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(142, 124, 119, 0.06);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    
+    /* 關鍵：精確計算寬度，扣除 gap 後在寬螢幕下剛好維持一排三個 */
+    width: calc(33.333% - 20px); 
+    min-width: 300px; /* 防止在縮小畫面時卡片過度擠壓變形 */
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(142, 124, 119, 0.12);
+}
+
+/* ── 商品圖片輪播容器 (Carousel) ── */
+.carousel-container {
+    position: relative;
+    width: 100%;
+    padding-top: 100%; /* 1:1 完美的正方形比例 */
+    background-color: #F5F1EB;
+    overflow: hidden;
+}
+
+.carousel-slides {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.carousel-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+    z-index: 1;
+}
+
+.carousel-img.active {
+    opacity: 1;
+    z-index: 2;
+}
+
+/* 輪播左右切換按鈕 */
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.75);
+    color: var(--text-dark);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    transition: background 0.2s;
+    user-select: none;
+}
+
+.carousel-btn:hover {
+    background: var(--primary-color);
+    color: #FFF;
+}
+
+.carousel-btn.prev { left: 10px; }
+.carousel-btn.next { right: 10px; }
+
+/* ── 商品文字資訊區 ── */
+.product-info {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.product-name {
+    font-size: 19px;
+    color: var(--text-dark);
+    margin: 10px 0 6px 0;
+    font-weight: 600;
+}
+
+.product-spec {
+    font-size: 13px;
+    color: #8E7C77;
+    margin-bottom: 12px;
+}
+
+.product-desc {
+    font-size: 14px;
+    color: #6E5E5A;
+    line-height: 1.6;
+    text-align: justify;
+    margin-bottom: 15px;
+    flex: 1; /* 彈性撐開高度，確保所有卡片的按鈕或價格能完美對齊在底部 */
+}
+
+.product-price {
+    font-size: 22px;
+    color: var(--highlight-color);
+    font-weight: bold;
+    font-family: 'Georgia', serif;
+    margin-top: auto;
+}
+
+/* ── 商品狀態標籤 (現貨/訂製/缺貨) ── */
+.product-status {
+    align-self: flex-start;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-instock { background-color: #E2ECE9; color: #3E6B5C; }
+.status-order { background-color: #F4EAE4; color: #A6633C; }
+.status-out { background-color: #EAEAEA; color: #777777; }
+
+/* ── 響應式手機板調整 ── */
+@media (max-width: 992px) {
+    .product-card {
+        width: calc(50% - 15px); /* 平板畫面改為一排兩個商品 */
+    }
+}
+
+@media (max-width: 768px) {
+    .product-card {
+        width: 100%; /* 手機畫面自動壓縮成一排一個商品，方便好閱讀 */
+    }
+}
+
+/* ==========================================================================
+   【修正】解決點擊導覽列時，商品區塊標題被 Header 遮擋的問題
+   ========================================================================== */
+#product {
+    /* 這裡的 80px 是預留給固定導覽列的高度，你可以根據需求微調數值 */
+    scroll-margin-top: px; 
+}
+
+body {
+    font-family: var(--font-family) !important;
+    background-color: var(--bg-main) !important;
+    color: var(--text-dark) !important;
+}
+
+/* 防禦：防止 Bootstrap 的 .dropdown-menu 覆蓋您原創的導覽列選單 */
+header .nav-item .dropdown-menu {
+    display: block !important; /* 確保原先的 opacity/visibility 滑動動畫不失效 */
+}
+
+/* 防禦：防止 Bootstrap 的 h1/h2 預設邊距干擾您的標題邊距 */
+.hero-title, .section-title, .page-title {
+    margin-top: 0 !important;
+}
+
+/* 防禦：防止 Bootstrap 的 table 屬性干擾今日看板與老闆介紹的古風 Layout 佈局 */
+.layout-table, .owner-table, .story-table {
+    border-collapse: separate !important;
+    display: table !important;
+}
+.layout-row, .owner-row, .story-row {
+    display: table-row !important;
+}
+.layout-col, .owner-avatar-col, .owner-content-col, .story-cell-text {
+    display: table-cell !important;
+}
