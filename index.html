@@ -15,6 +15,13 @@
         <div class="nav-container">
             <a href="#index" class="logo">Dreams.織物</a>
             
+            <input type="checkbox" id="menu-toggle" class="menu-checkbox" style="display: none;">
+            <label for="menu-toggle" class="burger-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </label>
+            
             <ul class="nav-menu" id="navbar">
                 <li class="nav-item"><a href="#index" class="nav-link">首頁</a></li>
                 <li class="nav-item"><a href="#boss" class="nav-link">老闆介紹</a></li>
@@ -29,7 +36,7 @@
                         <li><a href="#aftersale" class="nav-link">售後服務</a></li>
                     </ul>
                 </li>
-
+    
                 <li class="nav-item"><a href="#game-container" class="nav-link">編織小遊戲</a></li>
                 <li class="nav-item"><a href="#contact" class="nav-link">聯絡及購買</a></li>
                 <li class="nav-item"><a href="#feedback-form" class="nav-link">客戶反饋</a></li>
@@ -769,6 +776,13 @@
                 dx = 0; dy = gridSize; changingDirection = true;
             }
         }
+
+        document.querySelectorAll('.nav-menu .nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                const toggle = document.getElementById('menu-toggle');
+                if (toggle) toggle.checked = false;
+            });
+        });
     </script>
 </body>
 </html>
